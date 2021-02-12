@@ -127,14 +127,18 @@ for file in glob.glob("forecasts/*.csv"):
     if is_err:
         comment+= err_message + "\n"
 
-# add the consolidated comment to the PR
-if comment!='' and not local:
-    pr.create_issue_comment(comment)
+
 
 # Print out errors    
 if len(errors) > 0:
     comment+="\n\n Your submission has some validation errors. Please check the logs of the build under the \"Checks\" tab to get more details about the error. "
     print_output_errors(errors, prefix='data')
+
+# add the consolidated comment to the PR
+if comment!='' and not local:
+    pr.create_issue_comment(comment)
+
+if len(errors) > 1:
     sys.exit("\n ERRORS FOUND EXITING BUILD...")
 
 
