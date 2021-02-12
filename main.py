@@ -70,7 +70,7 @@ if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request_target' or local:
 # Split all files in `files_changed` list into valid forecasts and other files
 forecasts = [file for file in files_changed if pat.match(file.filename) is not None]
 metadatas = [file for file in files_changed if pat_meta.match(file.filename) is not None]
-other_files = [file for file in files_changed if (pat.match(file.filename) is None and pat_meta.match(file.filename))]
+other_files = [file for file in files_changed if (pat.match(file.filename) is None and pat_meta.match(file.filename) is None)]
 
 if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request_target':
     # IF there are other fiels changed in the PR 
