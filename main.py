@@ -130,7 +130,7 @@ for file in glob.glob("forecasts/*.csv"):
 # look for .csv files that dont match pat regex
 for file in other_files:
     if ".csv" in file.filename:
-        err_message = file.filename + "seems to violate naming convention" + "\n"
+        err_message = file.filename + " seems to violate naming convention" + "\n"
         comment += err_message
 
 
