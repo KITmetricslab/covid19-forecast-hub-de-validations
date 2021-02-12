@@ -40,22 +40,6 @@ def forecast_check(filepath):
                                               False, [],
                                               is_error, forecast_error_output)
     return output_error_text
-
-
-def filename_match_forecast_date(filename):
-    df = pd.read_csv(filename)
-    file_forecast_date = os.path.basename(os.path.basename(filename))[:10]
-    forecast_date_column = set(list(df['forecast_date']))
-    if len(forecast_date_column) > 1:
-        return "ERROR: %s has multiple forecast dates: %s. Forecast date must be unique" % (
-            filename, forecast_date_column)
-    else:
-        forecast_date_column = forecast_date_column.pop()
-        if (file_forecast_date != forecast_date_column):
-            return "ERROR %s forecast filename date %s does match forecast_date column %s" % (
-                filename, file_forecast_date, forecast_date_column)
-        else:
-            return None
         
 
 def compile_output_errors(filepath, is_filename_error, filename_error_output, is_error, forecast_error_output):
