@@ -22,7 +22,7 @@ from .quantile_io import json_io_dict_from_quantile_csv_file
 FIPS_CODES =  {"Germany": ["GM", "GM01", "GM02", "GM03", "GM04", "GM05", "GM06",
                             "GM07", "GM08", "GM09", "GM10", "GM11", "GM12",
                             "GM13", "GM14", "GM15", "GM16"],
-               "Loland": ["PL", "PL72", "PL73", "PL74", "PL75", "PL76", "PL77",
+               "Poland": ["PL", "PL72", "PL73", "PL74", "PL75", "PL76", "PL77",
                            "PL78", "PL79","PL80", "PL81", "PL82", "PL83", 
                            "PL84", "PL85", "PL86", "PL87"]}
 

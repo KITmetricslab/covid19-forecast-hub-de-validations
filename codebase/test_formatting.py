@@ -62,7 +62,7 @@ def compile_output_errors(filepath, is_filename_error, filename_error_output, is
     error_text = [filename_error_output, forecast_error_output]
 
     # Loop through all possible errors and add to final output
-    for i in range(len(error_bool)):
+    for i in range(len(error_bool)): 
         if error_bool[i]:  # Error == True
             output_error_text += error_text[i]
 
