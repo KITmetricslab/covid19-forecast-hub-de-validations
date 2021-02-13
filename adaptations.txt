@@ -1,0 +1,17 @@
+main.py:
+- match regex to file format (additional countries and forecast file suffixes)
+- German/polish hub does not enforce metadata rules, therefore I did not add these checks. You can find the files here: https://github.com/reichlab/covid19-forecast-hub-validations. 
+	Adding these checks should be straight forward (use US Hubs main.py as reference)
+- I added a comment for .csv files that do not match the expected regex (These are likely files that break a naming convention)
+
+test_formatting.py:
+- did not incorporate validate_forecast_values.py! (compares forecast numbers with population)
+
+covid19.py:
+- Added some QoL improvements to the validate_quantile_csv function (FAddition/Deletion of allowed FIPS CODES and TARGETS is a lot easier)
+- change allowed fips_codes
+- change allowed file suffixes 
+- If you have made significant changes to either this file, cdc_io.py or quantile_io.py you should be able to just use your changed files with minor adaptations.
+
+forecast_date.py 
+- adapt time zone

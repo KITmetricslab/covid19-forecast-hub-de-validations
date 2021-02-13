@@ -14,6 +14,7 @@ import urllib.request
 import glob
 from github import Github
 import sys
+from pathlib import Path
 
 from codebase.test_formatting import forecast_check, validate_forecast_file, print_output_errors
 from codebase.validation_functions.forecast_date import filename_match_forecast_date
@@ -70,7 +71,7 @@ if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request_target' or local:
 # Split all files in `files_changed` list into valid forecasts and other files
 forecasts = [file for file in files_changed if pat.match(file.filename) is not None]
 metadatas = [file for file in files_changed if pat_meta.match(file.filename) is not None]
-other_files = [file for file in files_changed if (pat.match(file.filename) is None and pat_meta.match(file.filename))]
+other_files = [file for file in files_changed if (pat.match(file.filename) is None and pat_meta.match(file.filename) is None)]
 
 if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request_target':
     # IF there are other fiels changed in the PR 
@@ -116,11 +117,15 @@ for f in metadatas:
     
 # Run validations on each of these files
 errors = {}
-for file in glob.glob("forecasts/*.csv"):
+for filepath in [f.filename for f in forecasts]:
+    path = Path(filepath)
+    parts = Path(*path.parts[2:])
+    file = str(Path('forecasts') / (parts))
+
     error_file = forecast_check(file)
     if len(error_file) >0:
-        errors[os.path.basename(file)] = error_file
     
+        errors[os.path.basename(file)] = error_file
     # Check for the forecast date column: Check if dat in filename matches forecast date column
     is_err, err_message = filename_match_forecast_date(file)
     
@@ -129,10 +134,9 @@ for file in glob.glob("forecasts/*.csv"):
 
 # look for .csv files that dont match pat regex
 for file in other_files:
-    if ".csv" in file.filename:
-        err_message = file.filenamen + "seems to violate naming convention" + "\n"
+    if file.filename[:14] == "data-processed" and ".csv" in file.filename:
+        err_message = file.filename + " seems to violate naming convention" + "\n"
         comment += err_message
-
 
 # Print out errors    
 if len(errors) > 0:
