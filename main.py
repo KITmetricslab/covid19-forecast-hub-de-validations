@@ -135,6 +135,7 @@ for filepath in [f.filename for f in forecasts]:
 # look for .csv files that dont match pat regex
 for file in other_files:
     if file.filename[:14] == "data-processed" and ".csv" in file.filename:
+
         err_message = file.filename + " seems to violate naming convention" + "\n"
         comment += err_message
 
