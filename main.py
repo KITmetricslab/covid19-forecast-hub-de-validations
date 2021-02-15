@@ -130,7 +130,7 @@ for filepath in [f.filename for f in forecasts]:
     is_err, err_message = filename_match_forecast_date(file)
     
     if is_err:
-        comment += err_message[0] + "\n"
+        comment += err_message + "\n"
 
 # look for .csv files that dont match pat regex
 for file in other_files:
