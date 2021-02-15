@@ -115,7 +115,7 @@ for f in forecasts:
 for f in metadatas:
     urllib.request.urlretrieve(f.raw_url, f"forecasts/{f.filename.split('/')[-1]}")
     
-# Run validations on each of these files
+# Run validations on each file that matches the naming convention
 errors = {}
 for filepath in [f.filename for f in forecasts]:
     path = Path(filepath)
@@ -136,8 +136,8 @@ for filepath in [f.filename for f in forecasts]:
 for file in other_files:
     if file.filename[:14] == "data-processed" and ".csv" in file.filename:
 
-        err_message = file.filename + " seems to violate naming convention" + "\n"
-        comment += err_message
+        err_message = " File seems to violate naming convention"
+        errors[file.filename] = [err_message]
 
 # Print out errors    
 if len(errors) > 0:
