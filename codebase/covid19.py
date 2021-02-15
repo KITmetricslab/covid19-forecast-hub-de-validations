@@ -74,10 +74,7 @@ def validate_quantile_csv_file(csv_fp, silent):
     
     for key in list(VALID_TARGET_NAMES.keys()):
         if ("-" + key) in csv_fp:
-            mode = key 
-    
-    print(mode)
-    
+            mode = key    
     
     if not silent:
         click.echo(f"* validating quantile_csv_file '{quantile_csv_file}'...")
