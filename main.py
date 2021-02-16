@@ -123,10 +123,7 @@ for f in metadatas:
     
 # Run validations on each file that matches the naming convention
 errors = {}
-for filepath in [f.filename for f in forecasts]:
-    path = Path(filepath)
-    parts = Path(*path.parts[2:])
-    file = str(Path('forecasts') / (parts))
+for file in glob.glob("forecasts/*.csv"):
 
     error_file = forecast_check(file)
     if len(error_file) >0:
