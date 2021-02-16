@@ -92,7 +92,7 @@ if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request_target':
         if pr is not None:
             pr.add_to_labels('added-raw-data')
     # Do not require this as it is done by the PR labeler action.
-    else:
+    if len(forecasts) > 0:
         if pr is not None:
             pr.add_to_labels('data-submission')
 
