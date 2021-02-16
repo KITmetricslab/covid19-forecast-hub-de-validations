@@ -71,7 +71,8 @@ if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request_target' or local:
 # Split all files in `files_changed` list into valid forecasts and other files
 forecasts = [file for file in files_changed if pat.match(file.filename) is not None]
 metadatas = [file for file in files_changed if pat_meta.match(file.filename) is not None]
-other_files = [file for file in files_changed if (pat.match(file.filename) is None and pat_meta.match(file.filename) is None)]
+rawdatas = [file for file in files_changed if file.filename[0:8] == "data-raw"]
+other_files = [file for file in files_changed if (pat.match(file.filename) is None and pat_meta.match(file.filename) is None and file not in rawdatas)]
 
 if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request_target':
     # IF there are other fiels changed in the PR 
@@ -81,14 +82,19 @@ if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request_target':
         if pr is not None:
             pr.add_to_labels('other-files-updated')
     
-    if len(metadatas) >0:
+    if len(metadatas) > 0:
         print(f"PR has metata files changed.")
         if pr is not None:
             pr.add_to_labels('metadata-change')
+            
+    if len(rawdatas) > 0:
+        print(f"PR has raw files changed.")
+        if pr is not None:
+            pr.add_to_labels('added-raw-data')
     # Do not require this as it is done by the PR labeler action.
-    # else:
-    #     if pr is not None:
-    #         pr.add_to_labels('data-submission')
+    else:
+        if pr is not None:
+            pr.add_to_labels('data-submission')
 
     deleted_forecasts = False
     
