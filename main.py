@@ -19,6 +19,8 @@ from pathlib import Path
 from codebase.test_formatting import forecast_check, validate_forecast_file, print_output_errors
 from codebase.validation_functions.forecast_date import filename_match_forecast_date
 
+from codebase.helper.post_image import image_comment
+
 # Pattern that matches a forecast file add to the data-processed folder.
 # Test this regex using this link: https://regex101.com/r/fn22tN/1 
 pat = re.compile(r"^data-processed/(.+)/\d\d\d\d-\d\d-\d\d-(Poland|Germany)-\1(-case)?\.csv")
@@ -34,7 +36,7 @@ else:
     print("Added token")
     token  = os.environ.get('GH_TOKEN')
     print(f"Token length: {len(token)}")
-    
+    imgbb_token = os.environ.get('IMGBB_TOKEN')
 if token is None:
     g = Github()
 else:
@@ -74,6 +76,7 @@ metadatas = [file for file in files_changed if pat_meta.match(file.filename) is 
 rawdatas = [file for file in files_changed if file.filename[0:8] == "data-raw"]
 other_files = [file for file in files_changed if (pat.match(file.filename) is None and pat_meta.match(file.filename) is None and file not in rawdatas)]
 
+
 if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request_target':
     # IF there are other fiels changed in the PR 
     #TODO: If there are other files changed as well as forecast files added, then add a comment saying so. 
@@ -95,6 +98,10 @@ if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request_target':
     if len(forecasts) > 0:
         if pr is not None:
             pr.add_to_labels('data-submission')
+        
+        # add picture of forecast to PR
+        pic_comment = image_comment(token=imgbb_token, file=os.getcwd() + "/img/test.png")
+        pr.create_issue_comment(pic_comment)
 
     deleted_forecasts = False
     
