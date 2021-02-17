@@ -100,8 +100,8 @@ if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request_target':
             pr.add_to_labels('data-submission')
         
         # add picture of forecast to PR
-        pic_comment = image_comment(token=imgbb_token, file=os.getcwd() + "/img/test.png")
-        pr.create_issue_comment(pic_comment)
+        #pic_comment = image_comment(token=imgbb_token, file=os.getcwd() + "/img/test.png")
+        #pr.create_issue_comment(pic_comment)
 
     deleted_forecasts = False
     
