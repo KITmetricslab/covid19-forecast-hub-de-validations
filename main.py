@@ -23,7 +23,7 @@ from codebase.helper.post_image import image_comment
 
 # Pattern that matches a forecast file add to the data-processed folder.
 # Test this regex using this link: https://regex101.com/r/fn22tN/1 
-pat = re.compile(r"^data-processed/(.+)/\d\d\d\d-\d\d-\d\d-(Poland|Germany)-\1(-case)?\.csv")
+pat = re.compile(r"^data-processed/(.+)/\d\d\d\d-\d\d-\d\d-(Poland|Germany)-\1(-case|-ICU)?\.csv")
 
 pat_meta = re.compile(r"^data-processed/(.+)/metadata-\1\.txt$")
 
@@ -145,7 +145,8 @@ for file in glob.glob("forecasts/*.csv"):
 # look for .csv files that dont match pat regex
 for file in other_files:
     if file.filename[:14] == "data-processed" and ".csv" in file.filename:
-
+        
+        print(file.filename)
         err_message = " File seems to violate naming convention"
         errors[file.filename] = [err_message]
 
@@ -158,7 +159,7 @@ if len(errors) > 0:
 if comment!='' and not local:
     pr.create_issue_comment(comment)
 
-if len(errors) > 1:
+if len(errors) > 0:
     sys.exit("\n ERRORS FOUND EXITING BUILD...")
 
 
