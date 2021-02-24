@@ -23,7 +23,7 @@ main = function(path){
   
   
   
-  path_forecast <- "./forecasts/2021-02-15-Germany-LeipzigIMISE-SECIR-case.csv"
+  path_forecast <- path
   dat_forecasts <- read_week_ahead(path_forecast)
   forecast_date <- as.Date(get_date_from_filename(basename(path_forecast)))
   
