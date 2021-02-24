@@ -15,6 +15,8 @@ import glob
 from github import Github
 import sys
 from pathlib import Path
+import subprocess
+
 
 from codebase.test_formatting import forecast_check, validate_forecast_file, print_output_errors
 from codebase.validation_functions.forecast_date import filename_match_forecast_date
@@ -99,9 +101,7 @@ if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request_target':
         if pr is not None:
             pr.add_to_labels('data-submission')
         
-        # add picture of forecast to PR
-        #pic_comment = image_comment(token=imgbb_token, file=os.getcwd() + "/img/test.png")
-        #pr.create_issue_comment(pic_comment)
+        
 
     deleted_forecasts = False
     
@@ -162,4 +162,13 @@ if comment!='' and not local:
 if len(errors) > 0:
     sys.exit("\n ERRORS FOUND EXITING BUILD...")
 
+for f in forecasts:
+    
+    if "-ICU" not in f.filename:
+        test = f"./forecasts/{f.filename.split('/')[-1]}"
+        subprocess.call(['Rscript', 'plot_at_pr.R', test])
+        
+        # add picture of forecast to PR
+        pic_comment = image_comment(token=imgbb_token, file=os.getcwd() + "/plot.png")
+        pr.create_issue_comment(pic_comment)
 

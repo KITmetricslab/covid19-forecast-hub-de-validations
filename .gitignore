@@ -1,6 +1,6 @@
 
 forecasts/
-
+.Rhistory
 
 __pycache__/
 *.py[cod]
