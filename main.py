@@ -180,7 +180,16 @@ if not local:
                 test = f"./forecasts/{f.filename.split('/')[-1]}"
                 subprocess.call(['Rscript', 'plot_at_pr.R', test])
                 
-                # add picture of forecast to PR
-                pic_comment = image_comment(token=imgbb_token, file=os.getcwd() + "/plot.png")
-                pr.create_issue_comment(pic_comment)
+                try:
+                    # add picture of forecast to PR
+                    pic_comment = image_comment(token=imgbb_token, file=os.getcwd() + "/plot.png")
+                    pr.create_issue_comment(pic_comment)
+
+                    # remove file after commenting
+                    if os.path.exists(os.getcwd() + "/plot.png"):
+                        os.remove(os.getcwd() + "/plot.png")
+
+                except FileNotFoundError:
+                    # forecast was not issued on saturday or monday
+                    pass
 
