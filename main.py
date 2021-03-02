@@ -108,21 +108,25 @@ if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request_target':
     # `f` is ab object of type: https://pygithub.readthedocs.io/en/latest/github_objects/File.html 
     # `forecasts` is a list of `File`s that are changed in the PR.
     for f in forecasts:
-        # TODO: Add a better way of checking whether a file is deleted or not. Currently, this checks if there are ANY deletion in a forecast file.
-        if f.deletions >0:
+        # check if file is remove
+        if f.status == "removed":
             deleted_forecasts = True
-    if deleted_forecasts:
-        # Add the `forecast-updated` label when there are deletions in the forecast file
-        pr.add_to_labels('forecast-updated')
-        comment += "\n Your submission seem to have updated/deleted some forecasts. Could you provide a reason for the updation/deletion? Thank you!\n\n"
+            pr.add_to_labels('forecast-deleted')
+            comment += "\n Your submission seem to have deleted some forecasts. Could you provide a reason for the updation/deletion? Thank you!\n\n"
+        
+        # if file status is not "added" it is probably "renamed" or "changed"
+        elif f.status != "added":
+            pr.add_to_labels('forecast-updated')
+            comment += "\n Your submission seem to have updated/renamed some forecasts. Could you provide a reason for the updation/deletion? Thank you!\n\n"
 
 # Download all forecasts
 # create a forecasts directory
 os.makedirs('forecasts', exist_ok=True)
 
-# Download all forecasts changed in the PR into the forecasts folder
+# Download all forecasts changed in the PR into the forecasts folder that have not been deleted
 for f in forecasts:
-    urllib.request.urlretrieve(f.raw_url, f"forecasts/{f.filename.split('/')[-1]}")
+    if f.status != "removed":
+        urllib.request.urlretrieve(f.raw_url, f"forecasts/{f.filename.split('/')[-1]}")
 
 # Download all metadat files changed in the PR into the forecasts folder
 for f in metadatas:
@@ -162,13 +166,14 @@ if comment!='' and not local:
 if len(errors) > 0:
     sys.exit("\n ERRORS FOUND EXITING BUILD...")
 
-for f in forecasts:
-    
-    if "-ICU" not in f.filename:
-        test = f"./forecasts/{f.filename.split('/')[-1]}"
-        subprocess.call(['Rscript', 'plot_at_pr.R', test])
+if not local:
+    for f in forecasts:
         
-        # add picture of forecast to PR
-        pic_comment = image_comment(token=imgbb_token, file=os.getcwd() + "/plot.png")
-        pr.create_issue_comment(pic_comment)
+        if "-ICU" not in f.filename:
+            test = f"./forecasts/{f.filename.split('/')[-1]}"
+            subprocess.call(['Rscript', 'plot_at_pr.R', test])
+            
+            # add picture of forecast to PR
+            pic_comment = image_comment(token=imgbb_token, file=os.getcwd() + "/plot.png")
+            pr.create_issue_comment(pic_comment)
 
