@@ -35,42 +35,43 @@ main = function(path){
   for(i in seq_along(dat_truth)) colnames(dat_truth[[i]]) <- c("date", "location", "value")
   
   # determine which targets are available:
-  contained_targets <- c(if(any(grepl("inc death", dat_forecasts$target))) "inc death",
-                         if(any(grepl("cum death", dat_forecasts$target))) "cum death",
-                         if(any(grepl("inc case", dat_forecasts$target))) "inc case",
-                         if(any(grepl("cum case", dat_forecasts$target))) "cum case")
+  contained_targets <- c(if(any(grepl("wk ahead inc death", dat_forecasts$target))) "inc death",
+                         if(any(grepl("wk ahead cum death", dat_forecasts$target))) "cum death",
+                         if(any(grepl("wk ahead inc case", dat_forecasts$target))) "inc case",
+                         if(any(grepl("wk ahead cum case", dat_forecasts$target))) "cum case")
   
-  # determine which locations are available:
-  contained_locations <- intersect(c("PL", "GM"), dat_forecasts$location)
-  
-  # number of plots to generate:
-  n_plots <- length(contained_locations)*length(contained_targets)
-  
-  # generate plot:
-  
-  png("plot.png", width = 450, height = 250*n_plots)
-  par(mfrow = c(n_plots, 1))
-  for(location in contained_locations){
-    for(target in contained_targets){
-      try({
-        plot_forecast(dat_forecasts,
-                      forecast_date = forecast_date,
-                      location = location,
-                      truth = dat_truth[[target]],
-                      target_type = target,
-                      levels_coverage = c(0.5, 0.95),
-                      start = as.Date(forecast_date) - 49,
-                      end = as.Date(forecast_date) + 28)
-        title(paste(location, ", ", target))
-        legend("topleft", legend = c("50%PI", "95% PI"), col = c("#699DAF", "#D3D3D3"),
-               pch = 15, bty = "n")
-        
-      })
+  if(length(contained_targets) > 0){
+    # determine which locations are available:
+    contained_locations <- intersect(c("PL", "GM"), dat_forecasts$location)
+    
+    # number of plots to generate:
+    n_plots <- length(contained_locations)*length(contained_targets)
+    
+    # generate plot:
+    
+    png("plot.png", width = 450, height = 250*n_plots)
+    par(mfrow = c(n_plots, 1))
+    for(location in contained_locations){
+      for(target in contained_targets){
+        try({
+          plot_forecast(dat_forecasts,
+                        forecast_date = forecast_date,
+                        location = location,
+                        truth = dat_truth[[target]],
+                        target_type = target,
+                        levels_coverage = c(0.5, 0.95),
+                        start = as.Date(forecast_date) - 49,
+                        end = as.Date(forecast_date) + 28)
+          title(paste(location, ", ", target))
+          legend("topleft", legend = c("50%PI", "95% PI"), col = c("#699DAF", "#D3D3D3"),
+                 pch = 15, bty = "n")
+          
+        })
+      }
     }
+    dev.off()
   }
-  dev.off()
 }
-  
 
 
 if(!interactive()) {
