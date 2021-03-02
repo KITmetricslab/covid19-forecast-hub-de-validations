@@ -168,12 +168,12 @@ if len(errors) > 0:
 
 if not local:
     for f in forecasts:
-        
-        if "-ICU" not in f.filename:
-            test = f"./forecasts/{f.filename.split('/')[-1]}"
-            subprocess.call(['Rscript', 'plot_at_pr.R', test])
-            
-            # add picture of forecast to PR
-            pic_comment = image_comment(token=imgbb_token, file=os.getcwd() + "/plot.png")
-            pr.create_issue_comment(pic_comment)
+        if f.status != "removed":
+            if "-ICU" not in f.filename:
+                test = f"./forecasts/{f.filename.split('/')[-1]}"
+                subprocess.call(['Rscript', 'plot_at_pr.R', test])
+                
+                # add picture of forecast to PR
+                pic_comment = image_comment(token=imgbb_token, file=os.getcwd() + "/plot.png")
+                pr.create_issue_comment(pic_comment)
 
