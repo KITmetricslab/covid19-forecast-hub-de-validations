@@ -104,6 +104,7 @@ if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request_target':
         
 
     deleted_forecasts = False
+    changed_forecasts = False
     
     # `f` is ab object of type: https://pygithub.readthedocs.io/en/latest/github_objects/File.html 
     # `forecasts` is a list of `File`s that are changed in the PR.
@@ -111,13 +112,19 @@ if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request_target':
         # check if file is remove
         if f.status == "removed":
             deleted_forecasts = True
-            pr.add_to_labels('forecast-deleted')
-            comment += "\n Your submission seem to have deleted some forecasts. Could you provide a reason for the updation/deletion? Thank you!\n\n"
+            
         
         # if file status is not "added" it is probably "renamed" or "changed"
         elif f.status != "added":
-            pr.add_to_labels('forecast-updated')
-            comment += "\n Your submission seem to have updated/renamed some forecasts. Could you provide a reason for the updation/deletion? Thank you!\n\n"
+            changed_forecasts = True
+
+    if deleted_forecasts:
+        pr.add_to_labels('forecast-deleted')
+        comment += "\n Your submission seem to have deleted some forecasts. Could you provide a reason for the updation/deletion? Thank you!\n\n"
+        
+    if changed_forecasts:
+        pr.add_to_labels('forecast-updated')
+        comment += "\n Your submission seem to have updated/renamed some forecasts. Could you provide a reason for the updation/deletion? Thank you!\n\n"
 
 # Download all forecasts
 # create a forecasts directory
