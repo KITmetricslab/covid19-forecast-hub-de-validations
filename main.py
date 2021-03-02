@@ -189,7 +189,7 @@ if not local:
                     if os.path.exists(os.getcwd() + "/plot.png"):
                         os.remove(os.getcwd() + "/plot.png")
 
-                except:
+                except FileNotFoundError:
                     # forecast was not issued on saturday or monday
                     pass
 
