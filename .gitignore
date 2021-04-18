@@ -1,6 +1,7 @@
 
 forecasts/
 .Rhistory
+test/test_event.json
 
 __pycache__/
 *.py[cod]

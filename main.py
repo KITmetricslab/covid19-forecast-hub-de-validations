@@ -171,15 +171,18 @@ if comment!='' and not local:
 if len(errors) > 0:
     sys.exit("\n ERRORS FOUND EXITING BUILD...")
 
-if not local:
-    comment += "Preview of submitted forecast:\n\n"
-    for f in forecasts:
-        if f.status != "removed":
-            if "-ICU" not in f.filename:
-                forecasts_to_vis = True
-                vis_link = "https://jobrac.shinyapps.io/app_check_submission/?file=" + f.raw_url
-                comment += vis_link + "\n\n"
-                    
-                if forecasts_to_vis:
+comment = "Preview of submitted forecast:\n\n"
+for f in forecasts:
+    if f.status != "removed":
+        if "-ICU" not in f.filename:
+            forecasts_to_vis = True
+            vis_link = "https://jobrac.shinyapps.io/app_check_submission/?file=" + f.raw_url
+            comment += vis_link + "\n\n"
+                
+            if forecasts_to_vis:
+                if not local:
                     pr.create_issue_comment(comment)
+                    
+                if local:
+                    print(comment)
 
