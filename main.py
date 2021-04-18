@@ -17,16 +17,13 @@ import sys
 from pathlib import Path
 import subprocess
 
-
 from codebase.test_formatting import forecast_check, validate_forecast_file, print_output_errors
 from codebase.validation_functions.forecast_date import filename_match_forecast_date
-
 from codebase.helper.post_image import image_comment
 
-# Pattern that matches a forecast file add to the data-processed folder.
+# Pattern that matches a forecast file added to the data-processed folder.
 # Test this regex using this link: https://regex101.com/r/fn22tN/1 
 pat = re.compile(r"^data-processed/(.+)/\d\d\d\d-\d\d-\d\d-(Poland|Germany)-\1(-case|-ICU)?\.csv")
-
 pat_meta = re.compile(r"^data-processed/(.+)/metadata-\1\.txt$")
 
 local = os.environ.get('CI') != 'true'
@@ -39,6 +36,7 @@ else:
     token  = os.environ.get('GH_TOKEN')
     print(f"Token length: {len(token)}")
     imgbb_token = os.environ.get('IMGBB_TOKEN')
+
 if token is None:
     g = Github()
 else:
@@ -174,22 +172,14 @@ if len(errors) > 0:
     sys.exit("\n ERRORS FOUND EXITING BUILD...")
 
 if not local:
+    comment += "Preview of submitted forecast:\n\n"
     for f in forecasts:
         if f.status != "removed":
             if "-ICU" not in f.filename:
-                test = f"./forecasts/{f.filename.split('/')[-1]}"
-                subprocess.call(['Rscript', 'plot_at_pr.R', test])
-                
-                try:
-                    # add picture of forecast to PR
-                    pic_comment = image_comment(token=imgbb_token, file=os.getcwd() + "/plot.png")
-                    pr.create_issue_comment(pic_comment)
-
-                    # remove file after commenting
-                    if os.path.exists(os.getcwd() + "/plot.png"):
-                        os.remove(os.getcwd() + "/plot.png")
-
-                except FileNotFoundError:
-                    # forecast was not issued on saturday or monday
-                    pass
+                forecasts_to_vis = True
+                vis_link = "https://jobrac.shinyapps.io/app_check_submission/?file=" + f.raw_url
+                comment += vis_link + "\n\n"
+                    
+                if forecasts_to_vis:
+                    pr.create_issue_comment(comment)
 
