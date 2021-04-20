@@ -179,10 +179,10 @@ for f in forecasts:
             vis_link = "https://jobrac.shinyapps.io/app_check_submission/?file=" + f.raw_url
             comment += vis_link + "\n\n"
                 
-            if forecasts_to_vis:
-                if not local:
-                    pr.create_issue_comment(comment)
-                    
-                if local:
-                    print(comment)
+if forecasts_to_vis:
+    if not local:
+        pr.create_issue_comment(comment)
+
+    if local:
+        print(comment)
 
