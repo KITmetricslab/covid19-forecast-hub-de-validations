@@ -171,6 +171,7 @@ if comment!='' and not local:
 if len(errors) > 0:
     sys.exit("\n ERRORS FOUND EXITING BUILD...")
 
+forecasts_to_vis = False
 comment = "Preview of submitted forecast:\n\n"
 for f in forecasts:
     if f.status != "removed":
